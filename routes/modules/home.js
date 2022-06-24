@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.render('index')
 })
 
-// router: post original URL to get shortened URL
+// router: post an original URL to generate a shortened URL
 router.post('/', (req, res) => {
   const originalUrl = req.body.originalUrl.trim()
   let randomCode = ''
@@ -20,6 +20,16 @@ router.post('/', (req, res) => {
     .then(() => {
       const shortenedUrl = `http://${req.headers.host}/${randomCode}`
       res.render('index', { shortenedUrl, originalUrl })
+    })
+    .catch(e => console.log(e))
+})
+
+// router: get the original URL via the shortened URL
+router.get('/:randomCode', (req, res) => {
+  const { randomCode } = req.params
+  Url.findOne({ randomCode })
+    .then(result => {
+      result ? res.redirect(`${result.originalUrl}`) : res.render('404')
     })
     .catch(e => console.log(e))
 })
