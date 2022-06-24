@@ -7,7 +7,7 @@
   </h5>
   <div>
     <a href="/" class="btn btn-lg btn-primary mx-2">Back</a>
-    <button class="btn btn-lg btn-info mx-2">Copy</button>
+    <button class="btn btn-lg btn-info mx-2" onclick="copyToClipboard()">Copy</button>
   </div>
   <small class="mt-3">Original URL: <a href="{{ originalUrl }}" target="_blank">{{ originalUrl }}</a></small>
 
@@ -20,4 +20,14 @@
     <button type="submit" class="btn btn-lg btn-primary">Shorten</button>
   </form>
   {{/if}}
+
  </main>
+
+ <script>
+  function copyToClipboard() {
+    navigator.clipboard
+      .writeText("{{ shortenedUrl }}")
+      .then(() => swal("Shortened Url is Copied!", "", "success"))
+      .catch(e => swal("Copy Error!", e, "error"))
+  }  
+</script>
