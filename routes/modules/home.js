@@ -1,5 +1,4 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const Url = require('../../models/Url')
 const generateRandomCode = require('../../utils/generate_random_code')
 
@@ -13,9 +12,16 @@ router.post('/', (req, res) => {
   const originalUrl = req.body.originalUrl.trim()
   let randomCode = ''
   Url.findOne({ originalUrl })
-    .then(result => {
-      randomCode = result ? result.randomCode : generateRandomCode(5)
-      if (!result) return Url.create({ originalUrl, randomCode })
+    .then(async result => {
+      // if the originalUrl exists, store its randomCode and stop the function
+      if (result) return randomCode = result.randomCode
+      // else generate and store a new randomCode
+      try {
+        randomCode = await generateRandomCode(5)
+        return Url.create({ originalUrl, randomCode })
+      } catch (e) {
+        console.log(e)
+      }
     })
     .then(() => {
       const shortenedUrl = `http://${req.headers.host}/${randomCode}`
@@ -29,7 +35,8 @@ router.get('/:randomCode', (req, res) => {
   const { randomCode } = req.params
   Url.findOne({ randomCode })
     .then(result => {
-      result ? res.redirect(`${result.originalUrl}`) : res.render('404')
+      // if the router doesn't exist, render 404 error page
+      result ? res.redirect(`${result.originalUrl}`) : res.status(404).render('404')
     })
     .catch(e => console.log(e))
 })

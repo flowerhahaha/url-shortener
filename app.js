@@ -2,7 +2,6 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
-const Url = require('./models/Url')
 const routes = require('./routes')
 require('./config/mongoose')
 const app = express()
