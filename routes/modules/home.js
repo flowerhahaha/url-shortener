@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const Url = require('../../models/Url')
-const generateRandomCode = require('../../utils/generate_random_code')
+const Url = require('../../models/url')
+const generateUniqueRandomCodeForUrlCollection = require('../../utils/generate_unique_random_code')
 
 // router: get homepage
 router.get('/', (req, res) => {
@@ -8,26 +8,24 @@ router.get('/', (req, res) => {
 })
 
 // router: post an original URL to generate a shortened URL
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const originalUrl = req.body.originalUrl.trim()
-  let randomCode = ''
-  Url.findOne({ originalUrl })
-    .then(async result => {
-      // if the originalUrl exists, store its randomCode and stop the function
-      if (result) return randomCode = result.randomCode
+  try {
+    let randomCode = ''
+    const urlData = await Url.findOne({ originalUrl })  
+    // if the originalUrl exists, store its randomCode
+    if (urlData) {
+      randomCode = urlData.randomCode
       // else generate and store a new randomCode
-      try {
-        randomCode = await generateRandomCode(5)
-        return Url.create({ originalUrl, randomCode })
-      } catch (e) {
-        console.log(e)
-      }
-    })
-    .then(() => {
-      const shortenedUrl = `http://${req.headers.host}/${randomCode}`
-      res.render('index', { shortenedUrl, originalUrl })
-    })
-    .catch(e => console.log(e))
+    } else {
+      randomCode = await generateUniqueRandomCodeForUrlCollection(5)
+      await Url.create({ originalUrl, randomCode })
+    }
+    const shortenedUrl = `http://${req.headers.host}/${randomCode}`
+    res.render('index', { shortenedUrl, originalUrl })    
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 // router: get the original URL via the shortened URL

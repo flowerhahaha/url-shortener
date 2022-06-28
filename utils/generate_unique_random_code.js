@@ -1,7 +1,7 @@
-const Url = require('../models/Url')
+const Url = require('../models/url')
 
 // generate unique random code according to given length with numbers, lower case and upper case letters 
-async function generateRandomCode(length) {
+async function generateUniqueRandomCodeForUrlCollection(length) {
   const lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz'
   const upperCaseLetters = lowerCaseLetters.toUpperCase()
   const numbers = '0123456789'
@@ -13,10 +13,10 @@ async function generateRandomCode(length) {
   // if the randomCode exists, generate a new one, else return the randomCode
   try {
     const result = await Url.exists({ randomCode })
-    return result ? generateRandomCode(length) : randomCode
+    return result ? generateUniqueRandomCodeForUrlCollection(length) : randomCode
   } catch (e) {
     console.log(e)
   }
 }
 
-module.exports = generateRandomCode
+module.exports = generateUniqueRandomCodeForUrlCollection
