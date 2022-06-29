@@ -2,10 +2,8 @@ const Url = require('../models/url')
 
 // generate unique random code according to given length with numbers, lower case and upper case letters 
 async function generateUniqueRandomCodeForUrlCollection(length) {
-  const lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz'
-  const upperCaseLetters = lowerCaseLetters.toUpperCase()
-  const numbers = '0123456789'
-  const letters = lowerCaseLetters + upperCaseLetters + numbers
+  // take way '01olOI' to avoid confusion
+  const letters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789'
   let randomCode = ''
   for (let i = 0; i < length; i++) {
     randomCode += letters[Math.floor(Math.random() * letters.length)]

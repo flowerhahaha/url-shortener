@@ -18,5 +18,5 @@ app.use(routes)
 
 // start the server at port 3000
 app.listen(3000, () => {
-  console.log('App is running on https://localhost:3000')
+  console.log('App is running on http://localhost:3000')
 })
